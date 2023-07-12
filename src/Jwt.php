@@ -2,12 +2,16 @@
 
 namespace uzdevid\jwt\auth;
 
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT as BaseJwt;
 use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
 use stdClass;
 use yii\base\Component;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use UnexpectedValueException;
+use InvalidArgumentException;
 
 /**
  * Class Jwt
@@ -58,7 +62,7 @@ class Jwt extends Component {
     public function decode(string $token, string|null $payloadClass = null): stdClass|false {
         try {
             return BaseJwt::decode($token, new Key($this->secretKey, $this->algo));
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException|UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
             return false;
         }
     }
